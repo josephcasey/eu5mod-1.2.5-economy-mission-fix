@@ -1,12 +1,12 @@
 "workshopitem"
 {
-    "appid"             "3450310"
-    "publishedfileid"   "0"
-    "contentfolder"     "/Users/josephcasey/cloned-repos/eu5-mod-econ-mission"
-    "previewfile"       "/Users/josephcasey/cloned-repos/eu5-mod-econ-mission/.metadata/thumbnail.png"
-    "visibility"        "2"
-    "title"             "Bugfix: Establish a Trade – Location Rank Fix (1.2.5)"
-    "description"       "[h1]Bugfix: Establish a Trade – Location Rank Fix[/h1]
+	"appid"		"3450310"
+	"publishedfileid"		"3739792025"
+	"contentfolder"		"/Users/josephcasey/cloned-repos/eu5-mod-econ-mission"
+	"previewfile"		"/Users/josephcasey/cloned-repos/eu5-mod-econ-mission/.metadata/thumbnail.png"
+	"visibility"		"2"
+	"title"		"Bugfix: Establish a Trade – Location Rank Fix (1.2.5)"
+	"description"		"[h1]Bugfix: Establish a Trade – Location Rank Fix[/h1]
 
 Fixes the [b]Develop a Capital Economy[/b] mission task [b]Establish a Trade[/b] so that [b]Town and City locations are correctly selectable[/b] as the mission description intends.
 
@@ -31,5 +31,5 @@ Changes [code]rank_index <= 1[/code] to [code]rank_index >= 1[/code] in two plac
 Only the single condition is changed. All other mission content is unmodified vanilla.
 
 [b]Note:[/b] Enabling any mod changes the game checksum, which disables achievements and blocks multiplayer with unmodded clients."
-    "changenote"        "Initial release for EU5 1.2.5 (Echinades). Fixes rank_index <= 1 -> >= 1 in establish_a_trade task."
+	"changenote"		"Initial release for EU5 1.2.5 (Echinades). Fixes rank_index <= 1 -> >= 1 in establish_a_trade task."
 }
