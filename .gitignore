@@ -1,0 +1,9 @@
+# Vanilla mission file will be here after running populate_mission_file.sh
+# Do NOT commit if it came from the user's game install without permission review.
+# The file itself is Paradox copyright; only the diff (the one-line fix) is ours.
+# When ready to publish, keep the file, commit it, and push.
+
+# OS cruft
+.DS_Store
+Thumbs.db
+*.bak

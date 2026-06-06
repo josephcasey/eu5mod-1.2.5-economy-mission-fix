@@ -1,0 +1,35 @@
+"workshopitem"
+{
+    "appid"             "3450310"
+    "publishedfileid"   "0"
+    "contentfolder"     "__REPLACE_WITH_ABSOLUTE_PATH__"
+    "previewfile"       "__REPLACE_WITH_ABSOLUTE_PATH__/.metadata/thumbnail.png"
+    "visibility"        "2"
+    "title"             "Bugfix: Establish a Trade – Location Rank Fix (1.2.5)"
+    "description"       "[h1]Bugfix: Establish a Trade – Location Rank Fix[/h1]
+
+Fixes the [b]Develop a Capital Economy[/b] mission task [b]Establish a Trade[/b] so that [b]Town and City locations are correctly selectable[/b] as the mission description intends.
+
+[h2]The Bug[/h2]
+In vanilla 1.2.5, the task's location filter uses [code]rank_index <= 1[/code] instead of [code]rank_index >= 1[/code]. The rank_index values are:
+[list]
+[*] 0 = Rural Settlement (lowest)
+[*] 1 = Town
+[*] 2 = City
+[*] 3 = Megalopolis (highest)
+[/list]
+The wrong operator means City (2) and Megalopolis (3) locations show an [b]X[/b] next to [i]'Location Rank Index of … is less or equal to 1'[/i] when hovered. The task cannot be completed with a City-rank location.
+
+[h2]The Fix[/h2]
+Changes [code]rank_index <= 1[/code] to [code]rank_index >= 1[/code] in the [i]enabled[/i] block of the [i]select_trigger[/i] for the [i]establish_a_trade[/i] task.
+
+[h2]Source[/h2]
+[list]
+[*] Developer-confirmed report: https://forum.paradoxplaza.com/forum/threads/develop-a-capital-economy-mission-task-establish-a-trade-requires-a-rural-location-instead-of-town-or-city.1920958/
+[*] Rank-index thread: https://forum.paradoxplaza.com/forum/threads/location-rank-index-less-than-1.1920949/
+[/list]
+Only the single condition is changed. All other mission content is unmodified vanilla.
+
+[b]Note:[/b] Enabling any mod changes the game checksum, which disables achievements and blocks multiplayer with unmodded clients."
+    "changenote"        "Initial release for EU5 1.2.5 (Echinades). Fixes rank_index <= 1 -> >= 1 in establish_a_trade task."
+}
