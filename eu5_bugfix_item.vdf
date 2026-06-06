@@ -2,8 +2,8 @@
 {
     "appid"             "3450310"
     "publishedfileid"   "0"
-    "contentfolder"     "__REPLACE_WITH_ABSOLUTE_PATH__"
-    "previewfile"       "__REPLACE_WITH_ABSOLUTE_PATH__/.metadata/thumbnail.png"
+    "contentfolder"     "/Users/josephcasey/cloned-repos/eu5-mod-econ-mission"
+    "previewfile"       "/Users/josephcasey/cloned-repos/eu5-mod-econ-mission/.metadata/thumbnail.png"
     "visibility"        "2"
     "title"             "Bugfix: Establish a Trade – Location Rank Fix (1.2.5)"
     "description"       "[h1]Bugfix: Establish a Trade – Location Rank Fix[/h1]
@@ -21,7 +21,7 @@ In vanilla 1.2.5, the task's location filter uses [code]rank_index <= 1[/code] i
 The wrong operator means City (2) and Megalopolis (3) locations show an [b]X[/b] next to [i]'Location Rank Index of … is less or equal to 1'[/i] when hovered. The task cannot be completed with a City-rank location.
 
 [h2]The Fix[/h2]
-Changes [code]rank_index <= 1[/code] to [code]rank_index >= 1[/code] in the [i]enabled[/i] block of the [i]select_trigger[/i] for the [i]establish_a_trade[/i] task.
+Changes [code]rank_index <= 1[/code] to [code]rank_index >= 1[/code] in two places in the mission file: the [i]select_trigger visible[/i] block (which locations appear selectable) and the [i]enabled[/i] block of the downstream [i]mission_prepare_industry_focus[/i] task (which gates the next step). Both use the same wrong operator.
 
 [h2]Source[/h2]
 [list]
