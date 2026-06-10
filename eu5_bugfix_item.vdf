@@ -31,5 +31,5 @@ Changes [code]rank_index <= 1[/code] to [code]rank_index <= 2[/code] in two plac
 Only the single condition is changed. All other mission content is unmodified vanilla.
 
 [b]Note:[/b] Enabling any mod changes the game checksum, which disables achievements and blocks multiplayer with unmodded clients."
-	"changenote"		"Correct the rank filter: rank_index <= 1 -> <= 2 (urban = Megalopolis/City/Town; Rural excluded). Supersedes the earlier >= 1 attempt, which let Rural Settlements through and blocked Megalopolis."
+	"changenote"		"Bump to v1.2: correct short_description (was incorrectly describing the fix as >= 1; actual fix is <= 2). No functional change to the mission file."
 }
