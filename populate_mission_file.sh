@@ -70,22 +70,26 @@ cp "$VANILLA_FILE" "$MOD_FILE"
 echo "Copied vanilla file -> $MOD_FILE"
 
 # --- Apply the fix -------------------------------------------------------------
-# Bug (confirmed by Paradox developer, still present in 1.2.5):
-#   File: generic_capital_economy_mission_pack.txt, line ~195
-#   Wrong: rank_index <= 1  (accepts Rural=0 + Town=1; rejects City=2 + Megalopolis=3)
-#   Fixed: rank_index >= 1  (accepts Town=1 + City=2 + Megalopolis=3; rejects Rural=0)
+# Bug (still present in 1.2.5). VERIFIED rank_index numbering from vanilla game files:
+#   0=Megalopolis, 1=City, 2=Town, 3=Rural Settlement
+#   (proof: western_schism.txt "town (rank index 2) or a city (rank index 1)";
+#    gui/filters/05_location.txt  location_is_urban = { rank_index < 3 })
+#   File: generic_capital_economy_mission_pack.txt, lines ~195 and ~285
+#   Wrong: rank_index <= 1  (matches Megalopolis=0 + City=1; WRONGLY rejects Town=2)
+#   Fixed: rank_index <= 2  (matches Megalopolis=0 + City=1 + Town=2; excludes Rural=3)
 #
-# The task description says "choose an Urban Location" (Town or City), so >= 1 is correct.
-# Source: https://forum.paradoxplaza.com/forum/threads/location-rank-index-less-than-1.1920949/
+# "Urban Location" = rank_index <= 2 == the game's own location_is_urban (rank_index < 3).
+# NOTE: an earlier attempt used >= 1 based on an INVERTED rank table — that let Rural
+# Settlements through and blocked Megalopolis. Do not revert to >= 1.
 
-sed -i.bak 's/rank_index\s*<=\s*1/rank_index >= 1/g' "$MOD_FILE"
-echo "Applied rank_index fix (rank_index <= 1  ->  rank_index >= 1)."
+sed -i.bak 's/rank_index\s*<=\s*1/rank_index <= 2/g' "$MOD_FILE"
+echo "Applied rank_index fix (rank_index <= 1  ->  rank_index <= 2)."
 
 # Remove sed backup
 rm -f "$MOD_FILE.bak"
 
 # --- Verify -------------------------------------------------------------------
-if grep -n "rank_index >= 1" "$MOD_FILE" | head -5; then
+if grep -n "rank_index <= 2" "$MOD_FILE" | head -5; then
     echo ""
     echo "SUCCESS: Fix applied. Verify line numbers above match ~195 in the vanilla file."
     echo ""

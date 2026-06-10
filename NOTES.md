@@ -1,13 +1,24 @@
 # EU5 1.2.5 – "Establish a Trade" Rank-Index Bugfix: Research Notes
 
+> **CORRECTION (2026-06-10, verified against vanilla game files).** An earlier version of
+> these notes had the rank_index numbering INVERTED (`0=Rural…3=Megalopolis`) and so
+> prescribed the wrong fix (`<= 1` → `>= 1`). That wrong fix actually let Rural Settlements
+> through and blocked Megalopolis — confirmed in-game when a Rural location (Stranrawer) was
+> selectable for the "Urban Location" task. The VERIFIED numbering is the opposite:
+> **`0=Megalopolis, 1=City, 2=Town, 3=Rural Settlement`** (proof in §2). The correct fix is
+> **`rank_index <= 1` → `rank_index <= 2`** at BOTH ~line 195 (`mission_setup_trade`
+> `select_trigger.visible`) and ~line 285 (`mission_prepare_industry_focus` `enabled`).
+> "Urban" = `rank_index <= 2` ≡ the game's own `location_is_urban = { rank_index < 3 }`.
+
 ## TL;DR for rebuilding after a patch
 
 Run `./populate_mission_file.sh` on any machine with EU5 installed.
 It copies the vanilla `generic_capital_economy_mission_pack.txt` and applies:
 ```
-rank_index <= 1   →   rank_index >= 1
+rank_index <= 1   →   rank_index <= 2
 ```
-at line ~195 (inside the `establish_a_trade` task's `select_trigger.enabled` block).
+at lines ~195 and ~285 (the `mission_setup_trade` `select_trigger.visible` block and the
+`mission_prepare_industry_focus` `enabled` block). "Urban" = `rank_index <= 2`.
 Commit the result and re-publish via SteamCMD with the same Workshop ID.
 
 ---
@@ -20,36 +31,43 @@ Commit the result and re-publish via SteamCMD with the same Workshop ID.
 |------|-------|--------|
 | File | `game/in_game/common/missions/generic_capital_economy_mission_pack.txt` | Paradox developer forum post |
 | Line | ~195 | Paradox developer forum post |
-| Wrong condition | `rank_index <= 1` | Developer-confirmed |
-| Correct condition | `rank_index >= 1` | Developer-confirmed |
-| Block context | `establish_a_trade` task → `select_trigger` → `enabled` | Forum analysis |
+| Wrong condition | `rank_index <= 1` (matches Megalopolis=0, City=1; rejects Town=2) | Verified from game files |
+| Correct condition | `rank_index <= 2` (adds Town=2; still excludes Rural=3) | Verified from game files (2026-06-10) |
+| Block context | `mission_setup_trade` `select_trigger.visible` (~L195) + `mission_prepare_industry_focus` `enabled` (~L285) | File inspection |
 | Patch status | Still present in 1.2.5 (cf2f) | Checked 1.2.X wiki patch notes |
 
 ### Forum threads (Cloudflare-protected, not directly scrapeable)
 - **Main report (confirmed):** https://forum.paradoxplaza.com/forum/threads/develop-a-capital-economy-mission-task-establish-a-trade-requires-a-rural-location-instead-of-town-or-city.1920958/
 - **Rank-index details:** https://forum.paradoxplaza.com/forum/threads/location-rank-index-less-than-1.1920949/post-31275011
 
-Developer quote (reconstructed from multiple search result snippets):
+Developer quote (reconstructed from multiple search result snippets — **NOTE: the `>= 1`
+here is WRONG; see the CORRECTION banner. The real fix is `<= 2`. Kept only as a record of
+what the web search reconstructed**):
 > "a content developer typed `rank_index <= 1` when they meant to type `rank_index >= 1`. This means you're meant to find a location with a town or city, but instead it requires that there be no town nor city."
 
 ---
 
 ## 2. Rank index values
 
-Confirmed from:
-- `MEIOU-and-Taxes/MnT-EU5/in_game/common/location_ranks/MnT_default.txt` (hierarchy: Megalopolis > City > Town > Rural Settlement)
-- EU5 wiki patch 1.2.4 notes mention "Megalopolis rank" as a distinct level
-- Multiple search result snippets confirm `rank_index >= 1` = "Town or City"
+Confirmed from vanilla 1.2.5 game files (this CORRECTS the earlier inverted guess):
+- `events/situations/western_schism.txt`: dev comment "the location is a town (rank index 2)
+  or a city (rank index 1)" — pins Town=2, City=1.
+- `gui/filters/05_location.txt`: `location_is_urban = { rank_index < 3 }` and
+  `location_is_not_urban = { rank_index > 2 }` — pins Rural=3, urban = 0..2.
+- `common/location_ranks/00_default.txt` definition order (megalopolis, city, town,
+  rural_settlement) — rank_index follows this order, 0..3.
 
 | rank_index | Location type |
 |-----------|--------------|
-| 0 | Rural Settlement (lowest) |
-| 1 | Town |
-| 2 | City |
-| 3 | Megalopolis |
+| 0 | Megalopolis (highest) |
+| 1 | City |
+| 2 | Town |
+| 3 | Rural Settlement (lowest) |
 
-With `rank_index <= 1`: Rural (0 ✓) + Town (1 ✓) pass; City (2 ✗) + Megalopolis (3 ✗) fail.
-With `rank_index >= 1`: Town (1 ✓) + City (2 ✓) + Megalopolis (3 ✓) pass; Rural (0 ✗) fails.
+With `rank_index <= 1`: Megalopolis (0 ✓) + City (1 ✓) pass; Town (2 ✗) + Rural (3 ✗) fail
+  → the bug (Towns wrongly rejected).
+With `rank_index <= 2`: Megalopolis (0 ✓) + City (1 ✓) + Town (2 ✓) pass; Rural (3 ✗) fails
+  → correct "urban only" (matches the game's own `location_is_urban`).
 
 ---
 

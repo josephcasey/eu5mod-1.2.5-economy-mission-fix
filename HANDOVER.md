@@ -13,13 +13,17 @@ confirmed bug: the **Develop a Capital Economy → Establish a Trade** mission t
 rejects Town/City locations because of a backwards operator.
 
 ```
-generic_capital_economy_mission_pack.txt  line ~195
-WRONG:  rank_index <= 1     (accepts Rural=0, Town=1; rejects City=2, Megalopolis=3)
-RIGHT:  rank_index >= 1     (accepts Town=1, City=2, Megalopolis=3; rejects Rural=0)
+generic_capital_economy_mission_pack.txt  lines ~195 and ~285
+VANILLA (bug): rank_index <= 1   (matches Megalopolis=0, City=1; WRONGLY rejects Town=2)
+FIX:           rank_index <= 2   (matches Megalopolis=0, City=1, Town=2; excludes Rural=3)
 ```
 
-Rank index values (confirmed): `0=Rural, 1=Town, 2=City, 3=Megalopolis`.
-Bug is developer-confirmed and still present in 1.2.5. Full research in `NOTES.md`.
+Rank index values — VERIFIED from vanilla game files (the earlier `0=Rural…3=Megalopolis`
+guess was INVERTED, which led to a wrong `>= 1` first attempt): `0=Megalopolis, 1=City,
+2=Town, 3=Rural Settlement`. Evidence: `events/situations/western_schism.txt` dev comment
+"town (rank index 2) or a city (rank index 1)"; `gui/filters/05_location.txt`
+`location_is_urban = { rank_index < 3 }`. So "urban" = `rank_index <= 2` (≡ `< 3`).
+Still present in 1.2.5. Full research in `NOTES.md`.
 
 **Player context (important constraints):**
 - Plays EU5 ONLY on GeForce NOW (cloud). No local Windows machine.
@@ -100,13 +104,14 @@ cd /path/to/eu5mod-1.2.5-economy-mission-fix
 ./populate_mission_file.sh "$HOME/eu5-files"
 ```
 This copies the vanilla file into `in_game/common/missions/` and runs
-`sed 's/rank_index <= 1/rank_index >= 1/g'`. It prints the fixed line numbers
-for verification — confirm they land around line 195 inside the
-`establish_a_trade` task's `select_trigger.enabled` block.
+`sed 's/rank_index <= 1/rank_index <= 2/g'`. It prints the fixed line numbers
+for verification — confirm they land around lines 195 and 285 (the
+`mission_setup_trade` `select_trigger.visible` block and the
+`mission_prepare_industry_focus` `enabled` block).
 
 ### Step 3 — VERIFY the fix carefully (do not skip)
 Open the now-populated file and check:
-1. The change is exactly `rank_index <= 1` → `rank_index >= 1`, nothing else altered.
+1. The change is exactly `rank_index <= 1` → `rank_index <= 2`, nothing else altered.
    `git diff` should show this is a fresh file; diff it against
    `$HOME/eu5-files/game/.../generic_capital_economy_mission_pack.txt` to prove
    ONLY the operator differs:
