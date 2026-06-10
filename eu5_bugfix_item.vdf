@@ -11,17 +11,17 @@
 Fixes the [b]Develop a Capital Economy[/b] mission task [b]Establish a Trade[/b] so that [b]Town and City locations are correctly selectable[/b] as the mission description intends.
 
 [h2]The Bug[/h2]
-In vanilla 1.2.5, the task's location filter uses [code]rank_index <= 1[/code] instead of [code]rank_index >= 1[/code]. The rank_index values are:
+In vanilla 1.2.5, the task's location filter uses [code]rank_index <= 1[/code], which only matches Megalopolis and City locations and wrongly rejects Towns. The rank_index values (confirmed from the game files) are:
 [list]
-[*] 0 = Rural Settlement (lowest)
-[*] 1 = Town
-[*] 2 = City
-[*] 3 = Megalopolis (highest)
+[*] 0 = Megalopolis (highest)
+[*] 1 = City
+[*] 2 = Town
+[*] 3 = Rural Settlement (lowest)
 [/list]
-The wrong operator means City (2) and Megalopolis (3) locations show an [b]X[/b] next to [i]'Location Rank Index of … is less or equal to 1'[/i] when hovered. The task cannot be completed with a City-rank location.
+The game's own definition of an urban location is [code]rank_index < 3[/code] (Megalopolis, City, or Town). The vanilla [code]<= 1[/code] excludes Town-rank locations, so a Town shows an [b]X[/b] and the task cannot be completed there.
 
 [h2]The Fix[/h2]
-Changes [code]rank_index <= 1[/code] to [code]rank_index >= 1[/code] in two places in the mission file: the [i]select_trigger visible[/i] block (which locations appear selectable) and the [i]enabled[/i] block of the downstream [i]mission_prepare_industry_focus[/i] task (which gates the next step). Both use the same wrong operator.
+Changes [code]rank_index <= 1[/code] to [code]rank_index <= 2[/code] in two places in the mission file: the [i]select_trigger visible[/i] block (which locations appear selectable) and the [i]enabled[/i] block of the downstream [i]mission_prepare_industry_focus[/i] task (which gates the next step). This matches the game's own [code]location_is_urban[/code] filter — Megalopolis, City and Town are selectable; Rural Settlements remain excluded.
 
 [h2]Source[/h2]
 [list]
@@ -31,5 +31,5 @@ Changes [code]rank_index <= 1[/code] to [code]rank_index >= 1[/code] in two plac
 Only the single condition is changed. All other mission content is unmodified vanilla.
 
 [b]Note:[/b] Enabling any mod changes the game checksum, which disables achievements and blocks multiplayer with unmodded clients."
-	"changenote"		"Initial release for EU5 1.2.5 (Echinades). Fixes rank_index <= 1 -> >= 1 in establish_a_trade task."
+	"changenote"		"Correct the rank filter: rank_index <= 1 -> <= 2 (urban = Megalopolis/City/Town; Rural excluded). Supersedes the earlier >= 1 attempt, which let Rural Settlements through and blocked Megalopolis."
 }
