@@ -1,0 +1,3 @@
+﻿l_english:
+ MOD_CHECKER_STAMP_ECON_FIX: "@trigger_yes! Establish a Trade Fix  v1.3  —  loaded"
+ MOD_CHECKER_STAMP_ECON_FIX_TT: "Bugfix: Establish a Trade – Location Rank Fix v1.3 is active. Towns, Cities and Megalopolises are selectable for the Establish a Trade mission task (rank_index <= 2)."

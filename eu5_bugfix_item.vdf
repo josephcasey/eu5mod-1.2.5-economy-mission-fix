@@ -31,5 +31,5 @@ Changes [code]rank_index <= 1[/code] to [code]rank_index <= 2[/code] in two plac
 Only the single condition is changed. All other mission content is unmodified vanilla.
 
 [b]Note:[/b] Enabling any mod changes the game checksum, which disables achievements and blocks multiplayer with unmodded clients."
-	"changenote"		"Bump to v1.2: correct short_description (was incorrectly describing the fix as >= 1; actual fix is <= 2). No functional change to the mission file."
+	"changenote"		"v1.3: add Mod Checker stamp — when the EU5 Mod Checker mod is also enabled, its Active Mods section on the Agenda panel now shows this mod as loaded. No change to the mission fix itself."
 }
